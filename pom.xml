@@ -20,7 +20,7 @@
     <distributionManagement>
         <repository>
             <id>atg</id>
-            <url>https://pkgs.dev.azure.com/racemusconsulting/atg-aircraft-performance/_packaging/>idl-to-java-generator-core/maven/v1</url>
+            <url>https://pkgs.dev.azure.com/racemusconsulting/atg-aircraft-performance/_packaging/>atg/maven/v1</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
