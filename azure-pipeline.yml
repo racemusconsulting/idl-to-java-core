@@ -11,30 +11,30 @@ jobs:
     steps:
       - checkout: self
 
-      - task: Maven@3
-        displayName: Build
-        inputs:
-          mavenPomFile: 'pom.xml'
-          mavenOptions: '-Xmx3072m'
-          javaHomeOption: 'JDKVersion'
-          jdkVersionOption: '1.17'
-          jdkArchitectureOption: 'x64'
-          publishJUnitResults: true
-          goals: 'clean verify'
+  - task: Maven@3
+    displayName: Build
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.17'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: true
+      goals: 'clean verify'
 
-      - task: MavenAuthenticate@0
-        inputs:
-          artifactsFeeds: 'atg'
-          mavenServiceConnections: 'mavenfeed'
+  - task: MavenAuthenticate@0
+    inputs:
+      artifactsFeeds: 'atg'
+      mavenServiceConnections: 'mavenfeed'
 
-      - task: Maven@3
-        inputs:
-          mavenPomFile: 'pom.xml'
-          mavenOptions: '-Xmx3072m'
-          javaHomeOption: 'JDKVersion'
-          jdkVersionOption: '1.17'
-          jdkArchitectureOption: 'x64'
-          mavenAuthenticateFeed: true
-          publishJUnitResults: false
-          goals: 'jar:jar deploy:deploy -Dcomponent=${{ parameters.component }} '
-        displayName: 'Publish Artifact to Azure Artifacts'
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.17'
+      jdkArchitectureOption: 'x64'
+      mavenAuthenticateFeed: true
+      publishJUnitResults: false
+      goals: 'jar:jar deploy:deploy -Dcomponent=${{ parameters.component }} '
+    displayName: 'Publish Artifact to Azure Artifacts'
