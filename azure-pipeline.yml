@@ -1,15 +1,28 @@
-trigger:
-  - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: ubuntu-latest
 
+trigger:
+  - main
+  - feature/*
+  - release/*
+pr:
+  - main
+  - feature/*
+  - release/*
 
-jobs:
-  - job: GenerateLibrary
-    displayName: 'Generate Component Library'
-    steps:
-      - checkout: self
+steps:
+  - checkout: self
+    fetchDepth: 0
+
+  - script: |
+      echo "##vso[task.setvariable variable=version;]$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
+    displayName: Build configuration
+
+  - task: MavenAuthenticate@0
+    inputs:
+      artifactsFeeds: 'atg'
+      mavenServiceConnections: 'mavenfeed'
 
   - task: Maven@3
     displayName: Build
@@ -28,6 +41,8 @@ jobs:
       mavenServiceConnections: 'mavenfeed'
 
   - task: Maven@3
+    displayName: Deploy Artifacts
+    condition: eq(startsWith(variables['Build.SourceBranch'], 'refs/heads/main'),'True')
     inputs:
       mavenPomFile: 'pom.xml'
       mavenOptions: '-Xmx3072m'
@@ -36,5 +51,4 @@ jobs:
       jdkArchitectureOption: 'x64'
       mavenAuthenticateFeed: true
       publishJUnitResults: false
-      goals: 'jar:jar deploy:deploy -Dcomponent=${{ parameters.component }} '
-    displayName: 'Publish Artifact to Azure Artifacts'
+      goals: 'jar:jar deploy:deploy'
